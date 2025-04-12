@@ -30,10 +30,12 @@ var initCmd = &cobra.Command{
 
 		if !found {
 			// initalize .jit project
-			fmt.Println("No .jit directory found in any ancestor of the current directory.")
-			// INIT(cwd)
-
+			err := utils.InitJitProject((cwd))
+			if err != nil {
+				fmt.Println("error init project:", err)
+			}
 			// print out welcom message
+			fmt.Println("Created JIT Project!")
 		} else {
 			fmt.Println("You're already inside a jit project!")
 		}
