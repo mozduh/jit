@@ -6,8 +6,8 @@ package cmd
 import (
 	"fmt"
 	"os"
-	"path/filepath"
 
+	"github.com/mozduh/jit/internal/utils"
 	"github.com/spf13/cobra"
 )
 
@@ -26,26 +26,7 @@ var initCmd = &cobra.Command{
 			fmt.Println("error getting current directory:", err)
 		}
 
-		found := false
-		dir := cwd
-
-		for {
-			// Check if `.dir` exists directly inside this path
-			checkPath := filepath.Join(dir, ".jit")
-			info, err := os.Stat(checkPath)
-			if err == nil && info.IsDir() {
-				// fmt.Println("Found .jit at:", checkPath)
-				found = true
-				break
-			}
-
-			// Move up
-			parent := filepath.Dir(dir)
-			if parent == dir {
-				break // Reached root
-			}
-			dir = parent
-		}
+		found := utils.CheckForJitDir(cwd)
 
 		if !found {
 			// initalize .jit project
@@ -53,6 +34,8 @@ var initCmd = &cobra.Command{
 			// INIT(cwd)
 
 			// print out welcom message
+		} else {
+			fmt.Println("You're already inside a jit project!")
 		}
 
 	},
