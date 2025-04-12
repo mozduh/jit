@@ -5,11 +5,12 @@ package cmd
 
 import (
 	"fmt"
-	"os"
 
 	"github.com/mozduh/jit/internal/utils"
 	"github.com/spf13/cobra"
 )
+
+var targetDir string
 
 // initCmd represents the init command
 var initCmd = &cobra.Command{
@@ -20,17 +21,12 @@ var initCmd = &cobra.Command{
 	`,
 	Run: func(cmd *cobra.Command, args []string) {
 
-		// get current working directory
-		cwd, err := os.Getwd()
-		if err != nil {
-			fmt.Println("error getting current directory:", err)
-		}
-
-		found := utils.CheckForJitDir(cwd)
+		// check target directory for jit project
+		found := utils.CheckForJitDir(targetDir)
 
 		if !found {
 			// initalize .jit project
-			err := utils.InitJitProject((cwd))
+			err := utils.InitJitProject((targetDir))
 			if err != nil {
 				fmt.Println("error init project:", err)
 			}
@@ -44,7 +40,7 @@ var initCmd = &cobra.Command{
 }
 
 func init() {
-	rootCmd.AddCommand(initCmd)
+	initCmd.Flags().StringVarP(&targetDir, "dir", "d", ".", "Base directory for JIT project")
 
 	// Here you will define your flags and configuration settings.
 

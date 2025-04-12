@@ -11,7 +11,8 @@ import (
 
 // taskGetCmd represents the taskGet command
 var TaskGetCmd = &cobra.Command{
-	Use:   "get",
+	Use:   "get <task-id>",
+	Args:  cobra.ExactArgs(1),
 	Short: "Inspect a task you have created",
 	Long: `Inspect a task you have created and see details 
 	such as the name and description of the task.`,
