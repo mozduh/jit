@@ -1,4 +1,4 @@
-APP_NAME := cli
+APP_NAME := jit
 DIST_DIR := dist
 GOOS_LIST := linux darwin windows
 GOARCH_LIST := amd64 arm64
