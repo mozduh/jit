@@ -1,14 +1,15 @@
 /*
 Copyright © 2025 mozduh
 */
-
-package utils
+package project
 
 import (
 	"encoding/json"
 	"fmt"
 	"os"
 	"path/filepath"
+
+	"github.com/mozduh/jit/internal/task"
 )
 
 const (
@@ -21,40 +22,31 @@ var defaultProjectConfig = map[string]interface{}{
 	"counter": 0,
 }
 
-func CheckForJitDir(cwd string) bool {
-	fmt.Println("Checking for .jit")
-
-	found := false
-	dir := cwd
-
-	for {
-		// Check if `.dir` exists directly inside this path
-		checkPath := filepath.Join(dir, ".jit")
-		info, err := os.Stat(checkPath)
-		if err == nil && info.IsDir() {
-			// fmt.Println("Found .jit at:", checkPath)
-			found = true
-			break
-		}
-
-		// Move up
-		parent := filepath.Dir(dir)
-		if parent == dir {
-			break // Reached root
-		}
-		dir = parent
-	}
-
-	return found
-}
-
 func InitJitProject(cwd string) error {
 
 	projectDirPath := filepath.Join(cwd, ProjectDirName)
 	projectFilePath := filepath.Join(projectDirPath, ProjectFileName)
+	taskDirBacklog := filepath.Join(cwd, task.TaskDirBacklog)
+	taskDirTodo := filepath.Join(cwd, task.TaskDirTodo)
+	taskDirProgress := filepath.Join(cwd, task.TaskDirProgress)
+	taskDirDone := filepath.Join(cwd, task.TaskDirDone)
 
-	// Create the .dir directory if it doesn't exist
+	// create .jit directory
 	if err := os.MkdirAll(projectDirPath, 0755); err != nil {
+		return err
+	}
+
+	// create task bin directories
+	if err := os.MkdirAll(taskDirBacklog, 0755); err != nil {
+		return err
+	}
+	if err := os.MkdirAll(taskDirTodo, 0755); err != nil {
+		return err
+	}
+	if err := os.MkdirAll(taskDirProgress, 0755); err != nil {
+		return err
+	}
+	if err := os.MkdirAll(taskDirDone, 0755); err != nil {
 		return err
 	}
 
@@ -69,5 +61,9 @@ func InitJitProject(cwd string) error {
 		return err
 	}
 
-	return os.WriteFile(projectFilePath, data, 0644)
+	if err := os.WriteFile(projectFilePath, data, 0644); err != nil {
+		return err
+	}
+
+	return nil
 }
